@@ -45,9 +45,6 @@ class UserService
     #[Inject]
     private EventDispatcherInterface $eventDispatcher;
 
-    #[Inject]
-    private UserFormatter $userFormatter;
-
     public function setToken($token = '')
     {
         $this->token = $token;
@@ -472,7 +469,7 @@ class UserService
             {
                 $mfuser = MfUser::where("token",$token)->first();
                 if ($mfuser){
-                    $userLogin = $this->userFormatter->base($mfuser);
+                    $userLogin = (new UserFormatter())->base($mfuser);
                     UtilsTool::redis()->set("TOKEN_".$token,serialize($userLogin));
                 }
             }
