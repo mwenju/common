@@ -15,21 +15,14 @@ use Hyperf\DbConnection\Db;
 
 class MallService
 {
-    private $user;
-    private $user_id;
-    private $shop_id;
-    public function __construct(User $user)
+    public function submit($param = [])
     {
-        $this->user = $user;
-        $this->shop_id = $user->getShopId();
-        $this->user_id = $user->getUserId();
-    }
-
-    public function submit()
-    {
-        $json_data          = UtilsTool::input("json_data",'');
+        $json_data          = $param['json_data']??'';
         $json_data          = json_decode($json_data,true);
-        $device_type        = input("device_type",'');
+        $device_type        = $param['device_type']??'';
+        $shop_id            = $param['shop_id']??0;
+        $user_id            = $param['user_id']??0;
+        $shop_name          = $param['shop_name']??0;
         $product_ids = [];
         foreach ($json_data as $v)
         {
@@ -42,7 +35,7 @@ class MallService
             $product_info[$re->id] = $re;
         }
         $product_integrate  = TbProduct::whereIn("id",$product_ids)->pluck("integrate_num",'id');
-        $have_total         = MfShopAccount::where("shop_id",$this->shop_id)->value("enable_integrate");
+        $have_total         = MfShopAccount::where("shop_id",$shop_id)->value("enable_integrate");
         $total              = 0;
         $product_total_num  = 0;
         $top_depot_id       = 1;
@@ -67,14 +60,14 @@ class MallService
                 UtilsTool::exception($product_info[$v['id']]['product_name']."库存不足");
             }
         }
-        $address = ShopAddressService::getLastOrderAddress($this->shop_id);
+        $address = ShopAddressService::getLastOrderAddress($shop_id);
         try {
             Db::beginTransaction();
             $order = [
-                'shop_id'               =>$this->shop_id,
-                'user_id'               =>$this->user_id,
-                'shop_name'             =>$this->user->getShopInfo()['cname'],
-                'order_code'            =>UtilsTool::create_order_number($this->user_id),
+                'shop_id'               =>$shop_id,
+                'user_id'               =>$user_id,
+                'shop_name'             =>$shop_name,
+                'order_code'            =>UtilsTool::create_order_number($user_id),
                 'all_money'             =>0,
                 'real_money'            =>0,
                 'status'                =>1,
@@ -143,24 +136,24 @@ class MallService
 
             Db::table("mf_shop_order_log")->insert([
                 'order_id'=>$order_id,
-                'shop_id'=>$this->shop_id,
-                'user_id'=>$this->user_id,
+                'shop_id'=>$shop_id,
+                'user_id'=>$user_id,
                 'status'=>0,
                 'remark'=>'提交订单',
                 'create_time'=>$now
             ]);
             Db::table("mf_shop_order_log")->insert([
                 'order_id'=>$order_id,
-                'shop_id'=>$this->shop_id,
-                'user_id'=>$this->user_id,
+                'shop_id'=>$shop_id,
+                'user_id'=>$user_id,
                 'status'=>0,
                 'remark'=>'订单已确认',
                 'create_time'=>$now
             ]);
-            Db::table("mf_shop_account")->where("shop_id",$this->shop_id)
+            Db::table("mf_shop_account")->where("shop_id",$shop_id)
                 ->decrement("enable_integrate",$total);
             Db::table("mf_shop_account_log")->insert([
-                'shop_id'=>$this->shop_id,
+                'shop_id'=>$shop_id,
                 'why_info'=>'积分兑换',
                 'add_type'=>6,
                 'in_or_out'=>-1,

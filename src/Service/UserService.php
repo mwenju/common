@@ -14,6 +14,7 @@ use Mwenju\Common\Model\MfUserDetail;
 use Mwenju\Common\Model\MfUserLoginLog;
 use Mwenju\Common\Pojo\Param;
 use Mwenju\Common\Pojo\User;
+use Mwenju\Common\Service\Formatter\UserFormatter;
 use Mwenju\Common\Utils\JsonResponse;
 use Mwenju\Common\Utils\Logger;
 use Mwenju\Common\Utils\RedisTool;
@@ -43,6 +44,9 @@ class UserService
 
     #[Inject]
     private EventDispatcherInterface $eventDispatcher;
+
+    #[Inject]
+    private UserFormatter $userFormatter;
 
     public function setToken($token = '')
     {
@@ -458,9 +462,6 @@ class UserService
     public function loginInfo($token):User
     {
         $userLogin = new User();
-        $userLogin->setDeviceCode(UtilsTool::input("device_code"));
-        $userLogin->setDeviceType(UtilsTool::input("device_type",'weixin'));
-        $userLogin->setDepotId(1);
         if(!empty($token))
         {
             $tokenData = UtilsTool::redis()->get("TOKEN_".$token);
@@ -469,40 +470,11 @@ class UserService
             }
             else
             {
-                $user = MfUser::where("token",$token)->first();
-                if ($user)
-                {
-                    $userLogin->setUserId((int)$user->id);
-                    $userLogin->setMobile($user->mobile?$user->mobile:"");
-
-                    $userLogin->setUserInfo($user->getAttributes());
-                    $shop = MfShop::where("user_id",$user->id)->first();
-                    if ($shop)
-                    {
-                        $userLogin->setShopId((int)$shop->id);
-                        $userLogin->setAreaCode($shop->area_code?$shop->area_code:"0");
-                        $userLogin->setCityCode($shop->city_code?$shop->city_code:"0");
-                        $userLogin->setProvinceCode($shop->province_code?$shop->province_code:"0");
-                        $userLogin->setShopInfo($shop->getAttributes());
-                        $userLogin->setTag((string)$shop->shop_tags);
-                    }
-                    $admUser = MfAdmin::where("user_id",$user->id)->first();
-                    if ($admUser)
-                    {
-                        $userLogin->setAdminId($admUser->id);
-                        $userLogin->setAdminName($admUser->real_name);
-                        $userLogin->setDepotId(intval($admUser->top_depot_id));
-                        $userLogin->setAdminRoleId(intval($admUser->role_ids));
-                    }else{
-                        $userLogin->setAdminId(0);
-                        $userLogin->setAdminName('');
-                        $userLogin->setDepotId(0);
-                        $userLogin->setAdminRoleId(0);
-                    }
-
+                $mfuser = MfUser::where("token",$token)->first();
+                if ($mfuser){
+                    $userLogin = $this->userFormatter->base($mfuser);
                     UtilsTool::redis()->set("TOKEN_".$token,serialize($userLogin));
                 }
-
             }
         }
         return $userLogin;

@@ -19,12 +19,56 @@ class User
     private $city_code = '';
     private $area_code = '';
     private $depot_id = 1;
-    private $device_type = 'weixin';
-    private $device_code = '';
-    private $shop_info = [];
-    private $user_info = [];
     private $shop_name = '';
     private $tag = '';
+
+    /**
+     * @return int
+     */
+    public function getShopId(): int
+    {
+        return $this->shop_id;
+    }
+
+    /**
+     * @param int $shop_id
+     */
+    public function setShopId(int $shop_id): void
+    {
+        $this->shop_id = $shop_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @param int $user_id
+     */
+    public function setUserId(int $user_id): void
+    {
+        $this->user_id = $user_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAdminId(): int
+    {
+        return $this->admin_id;
+    }
+
+    /**
+     * @param int $admin_id
+     */
+    public function setAdminId(int $admin_id): void
+    {
+        $this->admin_id = $admin_id;
+    }
 
     /**
      * @return int
@@ -61,33 +105,17 @@ class User
     /**
      * @return string
      */
-    public function getShopName(): string
+    public function getAdminName(): string
     {
-        return $this->shop_name;
+        return $this->admin_name;
     }
 
     /**
-     * @param string $shop_name
+     * @param string $admin_name
      */
-    public function setShopName(string $shop_name): void
+    public function setAdminName(string $admin_name): void
     {
-        $this->shop_name = $shop_name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAdminRoleId(): int
-    {
-        return $this->admin_role_id;
-    }
-
-    /**
-     * @param int $admin_role_id
-     */
-    public function setAdminRoleId(int $admin_role_id): void
-    {
-        $this->admin_role_id = $admin_role_id;
+        $this->admin_name = $admin_name;
     }
 
     /**
@@ -107,83 +135,19 @@ class User
     }
 
     /**
-     * @return string
-     */
-    public function getAdminName(): string
-    {
-        return $this->admin_name;
-    }
-
-    /**
-     * @param string $admin_name
-     */
-    public function setAdminName(string $admin_name): void
-    {
-        $this->admin_name = $admin_name;
-    }
-
-    /**
      * @return int
      */
-    public function getAdminId(): int
+    public function getAdminRoleId(): int
     {
-        return $this->admin_id;
+        return $this->admin_role_id;
     }
 
     /**
-     * @param int $admin_id
+     * @param int $admin_role_id
      */
-    public function setAdminId(int $admin_id): void
+    public function setAdminRoleId(int $admin_role_id): void
     {
-        $this->admin_id = $admin_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTag(): string
-    {
-        return $this->tag;
-    }
-
-    /**
-     * @param string $tag
-     */
-    public function setTag(string $tag): void
-    {
-        $this->tag = $tag;
-    }
-
-    /**
-     * @return int
-     */
-    public function getShopId(): int
-    {
-        return $this->shop_id;
-    }
-
-    /**
-     * @param int $shop_id
-     */
-    public function setShopId(int $shop_id): void
-    {
-        $this->shop_id = $shop_id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserId(): int
-    {
-        return $this->user_id;
-    }
-
-    /**
-     * @param int $user_id
-     */
-    public function setUserId(int $user_id): void
-    {
-        $this->user_id = $user_id;
+        $this->admin_role_id = $admin_role_id;
     }
 
     /**
@@ -250,11 +214,6 @@ class User
         $this->area_code = $area_code;
     }
 
-    public function toString():string
-    {
-        return json_encode($this,JSON_FORCE_OBJECT);
-    }
-
     /**
      * @return int
      */
@@ -274,64 +233,33 @@ class User
     /**
      * @return string
      */
-    public function getDeviceType(): string
+    public function getShopName(): string
     {
-        return $this->device_type;
+        return $this->shop_name;
     }
 
     /**
-     * @param string $device_type
+     * @param string $shop_name
      */
-    public function setDeviceType(string $device_type): void
+    public function setShopName(string $shop_name): void
     {
-        $this->device_type = $device_type;
+        $this->shop_name = $shop_name;
     }
 
     /**
      * @return string
      */
-    public function getDeviceCode(): string
+    public function getTag(): string
     {
-        return $this->device_code;
+        return $this->tag;
     }
 
     /**
-     * @param string $device_code
+     * @param string $tag
      */
-    public function setDeviceCode(string $device_code): void
+    public function setTag(string $tag): void
     {
-        $this->device_code = $device_code;
+        $this->tag = $tag;
     }
 
-    /**
-     * @return array
-     */
-    public function getShopInfo(): array
-    {
-        return $this->shop_info;
-    }
-
-    /**
-     * @param array $shop_info
-     */
-    public function setShopInfo(array $shop_info): void
-    {
-        $this->shop_info = $shop_info;
-    }
-
-    /**
-     * @return array
-     */
-    public function getUserInfo(): array
-    {
-        return $this->user_info;
-    }
-
-    /**
-     * @param array $user_info
-     */
-    public function setUserInfo(array $user_info): void
-    {
-        $this->user_info = $user_info;
-    }
 }
