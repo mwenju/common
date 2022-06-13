@@ -13,7 +13,7 @@ use Hyperf\Di\Exception\Exception;
 
 class UtilsUserLogin
 {
-    public static function check($must = true):User
+    public static function check($must = true):?User
     {
         $token = UtilsTool::input("token");
         $userLogin = self::updateInfo($token);
@@ -23,7 +23,7 @@ class UtilsUserLogin
         return $userLogin;
     }
 
-    public static function updateInfo($token = ''):User
+    public static function updateInfo($token = ''):?User
     {
         $userLogin = new User();
         $userLogin->setDeviceCode(UtilsTool::input("device_code"));
