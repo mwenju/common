@@ -16,7 +16,7 @@ if (! function_exists('di')) {
      * Finds an entry of the container by its identifier and returns it.
      * @return mixed|\Psr\Container\ContainerInterface
      */
-    function di(?string $id = null):\Psr\Container\ContainerInterface
+    function di(?string $id = null)
     {
         $container = ApplicationContext::getContainer();
         if ($id) {
