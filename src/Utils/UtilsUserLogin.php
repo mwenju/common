@@ -17,17 +17,17 @@ class UtilsUserLogin
     /**
      * @throws Exception
      */
-    public static function check($must = true):User|Exception
+    public function check($must = true):User|Exception
     {
         $token = UtilsTool::input("token");
-        $userLogin = self::updateInfo($token);
+        $userLogin = $this->updateInfo($token);
         if ($must && $userLogin->getUserId() == 0){
             UtilsTool::exception("未登录",302);
         }
         return $userLogin;
     }
 
-    public static function updateInfo($token = ''):User|Exception
+    public function updateInfo($token = ''):User|Exception
     {
         return di(UserService::class)->loginInfo($token);
     }

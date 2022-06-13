@@ -56,7 +56,7 @@ class SearchService extends BaseService implements ISearchService
         $es = $this->esService->client;
         $esService = $this->esService;
         $productService = $this->productService;
-        $user                   = UtilsUserLogin::check(false);
+        $user                   = di(UtilsUserLogin::class)->check(false);
         $page                   = !empty($input["page"])?intval($input["page"]):1;
         $pagesize               = !empty($input["rows"])?intval($input["rows"]):10;
         $params['index']        = $this->index;

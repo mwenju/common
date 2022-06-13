@@ -12,7 +12,7 @@ class ShopCartServiceFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $user = UtilsUserLogin::check(true);
+        $user = di(UtilsUserLogin::class)->check(true);
         return make(ShopCartService::class, compact('user'));
     }
 }
