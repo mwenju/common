@@ -1,6 +1,47 @@
 <?php
+
+use Mwenju\Common\Utils\JsonResponse;
+use Mwenju\Common\Utils\UtilsTool;
+use Hyperf\DbConnection\Db;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\Logger\LoggerFactory;
+use Hyperf\Utils\ApplicationContext;
+use Psr\Log\LoggerInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Redis\RedisFactory;
+use Psr\Http\Message\ServerRequestInterface;
+use Hyperf\Contract\SessionInterface;
+if (! function_exists('di')) {
+    /**
+     * Finds an entry of the container by its identifier and returns it.
+     * @return mixed|\Psr\Container\ContainerInterface
+     */
+    function di(?string $id = null)
+    {
+        $container = ApplicationContext::getContainer();
+        if ($id) {
+            return $container->get($id);
+        }
+
+        return $container;
+    }
+}
+if (!function_exists("config_value"))
+{
+    function config_value($name = '', $def = "")
+    {
+        $nameKey = "CONFIG_".$name;
+        $redis = UtilsTool::redis();
+        $val = $redis->get($nameKey);
+        if($val) return $val;
+        $val = Db::table("mf_config")->where('config_name',$name)->value('config_value');
+        $redis->set($nameKey,$val);
+        return !is_null($val)?$val:$def;
+    }
+}
 if (!function_exists("url")){
-    function url(?string $url,array $query,?string $domain){
+    function url(?string $url,array $query){
+        $domain = config_value("api.url_domain_root");
         if (!preg_match("/^http?/", $domain)) {
             $domain = "http://".$domain;
         }
@@ -8,6 +49,56 @@ if (!function_exists("url")){
             $url = rtrim($domain,"/")."/".trim($url,'/')."?";
         }
         return $url.http_build_query($query);
+    }
+}
+
+if (!function_exists("img_url"))
+{
+    function img_url(?string $str,$size = 'listh',$returnDef = true,$device_type = '')
+    {
+        if (empty($str)) {
+            if ($returnDef && preg_match("/^http?/", $returnDef)) {
+                return $returnDef;
+            }
+            return $returnDef ? config_value('api.no_img_path') : "";
+        }
+        if (!empty($size)) $size = '-' . $size;
+        if (preg_match("/^http?/", $str)) {
+            if (preg_match("/img/i", $str)) {
+                $str = rtrim($str,"-detailh");
+                return $str . $size;
+            }
+            return $str;
+        } else {
+
+            $str = ltrim($str, '/');
+            if ($device_type == 'miniprogram') {
+                return config_value('api.https_img_server_url') . $str . $size;
+            }
+            return config_value('api.img_server_url') . $str . $size;
+        }
+    }
+}
+if (!function_exists("input")) {
+    function input($key = '', $def = '', $filter = '')
+    {
+        if (empty($key)) return ApplicationContext::getContainer()->get(RequestInterface::class)->all();
+        $value = ApplicationContext::getContainer()->get(RequestInterface::class)->input($key, $def);
+        return !empty($filter) ? call_user_func($filter, $value) : $value;
+    }
+}
+if (!function_exists("jsonSuccess")) {
+    function jsonSuccess($data = [],$msg = '')
+    {
+        if (empty($msg))
+        {
+            if (!is_array($data) && !is_object($data) && strlen($data) > 0) {
+                $msg = $data;
+                $data = [];
+            }
+            $msg = $msg ? $msg : "提交成功";
+        }
+        return JsonResponse::ajaxSuccess($data,$msg);
     }
 }
 if (!function_exists("md7")) {
@@ -42,6 +133,75 @@ if (!function_exists("md7")) {
         return $val_str;
     }
 }
+
+if (!function_exists("arraySuccess")){
+    function arraySuccess($msg = "处理成功",$data = []){
+        return ['data'=>$data,'msg'=>$msg,'err_code'=>0];
+    }
+}
+if (!function_exists("arrayError")){
+    function arrayError($msg = "处理成功",$err_code = 300){
+        return ['msg'=>$msg,'err_code'=>$err_code];
+    }
+}
+if (!function_exists('redis')) {
+    /**
+     * Redis
+     * @param string $name
+     * @return \Hyperf\Redis\RedisProxy|Redis
+     */
+    function redis($name = 'default')
+    {
+        return ApplicationContext::getContainer()->get(RedisFactory::class)->get($name);
+    }
+}
+
+if (!function_exists('Logger')) {
+    /**
+     * Redis
+     * @return StdoutLoggerInterface
+     */
+    function Logger()
+    {
+        return ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
+    }
+}
+
+if (!function_exists('get_client_ip')) {
+    function get_client_ip()
+    {
+        /**
+         * @var ServerRequestInterface $request
+         */
+        $request = ApplicationContext::getContainer()->get(ServerRequestInterface::class);
+        $ip_addr = $request->getHeaderLine('x-forwarded-for');
+        if (verify_ip($ip_addr)) {
+            return $ip_addr;
+        }
+        $ip_addr = $request->getHeaderLine('remote-host');
+        if (verify_ip($ip_addr)) {
+            return $ip_addr;
+        }
+        $ip_addr = $request->getHeaderLine('x-real-ip');
+        if (verify_ip($ip_addr)) {
+            return $ip_addr;
+        }
+        $ip_addr = $request->getServerParams()['remote_addr'] ?? '0.0.0.0';
+        if (verify_ip($ip_addr)) {
+            return $ip_addr;
+        }
+        return '0.0.0.0';
+    }
+}
+
+
+if (!function_exists('get_container')) {
+    function get_container($id)
+    {
+        return ApplicationContext::getContainer()->get($id);
+    }
+}
+
 if (!function_exists('verify_ip')) {
     function verify_ip($realip)
     {
@@ -87,6 +247,8 @@ if (!function_exists('filter_emoji')) {
         $cleaned = strip_tags($str);
         return htmlspecialchars(($cleaned));
     }
+
+
 }
 
 if (!function_exists('convert_underline')) {
@@ -111,21 +273,4 @@ if (!function_exists('hump_to_line')) {
         return $str;
     }
 }
-if (!function_exists("httpGet")){
-    function httpGet($url,$post='')
-    {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 500);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        if($post) {
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
-        }
-        $res = curl_exec($curl);
-        curl_close($curl);
-        return $res;
-    }
-}
+

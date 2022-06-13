@@ -23,7 +23,7 @@ class UtilsUserLogin
         return $userLogin;
     }
 
-    public static function updateInfo($token = '')
+    public static function updateInfo($token = ''):User
     {
         $userLogin = new User();
         $userLogin->setDeviceCode(UtilsTool::input("device_code"));
