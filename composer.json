@@ -18,14 +18,14 @@
         "qiniu/php-sdk": "^7.4",
         "sy-records/think-template": "^2.0",
         "wechatpay/wechatpay": "^1.4",
-        "hyperf/database": "3.0.x-dev",
-        "hyperf/db-connection": "3.0.x-dev",
-        "hyperf/logger": "3.0.x-dev",
-        "hyperf/model-cache": "3.0.x-dev",
-        "hyperf/redis": "3.0.x-dev",
-        "hyperf/rpc-client": "3.0.x-dev",
-        "hyperf/rpc-server": "3.0.x-dev",
-        "hyperf/utils": "3.0.x-dev"
+        "hyperf/database": "~3.0.0",
+        "hyperf/db-connection": "~3.0.0",
+        "hyperf/logger": "~3.0.0",
+        "hyperf/model-cache": "~3.0.0",
+        "hyperf/redis": "~3.0.0",
+        "hyperf/rpc-client": "~3.0.0",
+        "hyperf/rpc-server": "~3.0.0",
+        "hyperf/utils": "~3.0.0"
     },
     "minimum-stability": "dev",
 	"extra": {
