@@ -61,7 +61,7 @@ class UserNewsService implements UserNewsServiceInterface
             ->get()->each(function ($item,$index){
                 if(!empty($item->img_urls))
                 {
-                    $item->img_urls = array_map(["App\Common\Utils\UtilsTool","img_url"],explode(",",$item->img_urls));
+                    $item->img_urls = array_map("img_url",explode(",",$item->img_urls));
                 }
             });
         return $list;
