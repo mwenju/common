@@ -29,7 +29,7 @@ class UtilsUserLogin
 
     public function updateInfo($token = ''):User|Exception
     {
-        return di(UserService::class)->loginInfo($token);
+        return (new UserService())->loginInfo($token);
     }
 
 }

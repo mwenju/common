@@ -23,6 +23,42 @@ class User
     private $tag = '';
 
     /**
+     * @param int $shop_id
+     * @param int $user_id
+     * @param int $admin_id
+     * @param int $supplier_id
+     * @param string $supplier_name
+     * @param string $admin_name
+     * @param int $admin_depot_id
+     * @param int $admin_role_id
+     * @param string $mobile
+     * @param string $province_code
+     * @param string $city_code
+     * @param string $area_code
+     * @param int $depot_id
+     * @param string $shop_name
+     * @param string $tag
+     */
+    public function __construct(int $shop_id, int $user_id, int $admin_id, int $supplier_id, string $supplier_name, string $admin_name, int $admin_depot_id, int $admin_role_id, string $mobile, string $province_code, string $city_code, string $area_code, int $depot_id, string $shop_name, string $tag)
+    {
+        $this->shop_id = $shop_id;
+        $this->user_id = $user_id;
+        $this->admin_id = $admin_id;
+        $this->supplier_id = $supplier_id;
+        $this->supplier_name = $supplier_name;
+        $this->admin_name = $admin_name;
+        $this->admin_depot_id = $admin_depot_id;
+        $this->admin_role_id = $admin_role_id;
+        $this->mobile = $mobile;
+        $this->province_code = $province_code;
+        $this->city_code = $city_code;
+        $this->area_code = $area_code;
+        $this->depot_id = $depot_id;
+        $this->shop_name = $shop_name;
+        $this->tag = $tag;
+    }
+
+    /**
      * @return int
      */
     public function getShopId(): int
