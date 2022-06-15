@@ -6,26 +6,10 @@
     "autoload": {
         "psr-4": {
             "Mwenju\\Common\\": "src/"
-        },
-        "files": [
-            "src/functions.php"
-        ]
+        }
     },
     "require": {
-        "PHP": ">=8.0",
-		"alibabacloud/dysmsapi-20170525": "2.0.6",
-        "picqer/php-barcode-generator": "^2.2",
-        "qiniu/php-sdk": "^7.4",
-        "sy-records/think-template": "^2.0",
-        "wechatpay/wechatpay": "^1.4",
-        "hyperf/database": "~3.0.0",
-        "hyperf/db-connection": "~3.0.0",
-        "hyperf/logger": "~3.0.0",
-        "hyperf/model-cache": "~3.0.0",
-        "hyperf/redis": "~3.0.0",
-        "hyperf/rpc-client": "~3.0.0",
-        "hyperf/rpc-server": "~3.0.0",
-        "hyperf/utils": "~3.0.0"
+        "PHP": ">=7.0"
     },
     "minimum-stability": "dev",
 	"extra": {
