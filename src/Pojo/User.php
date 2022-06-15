@@ -19,8 +19,25 @@ class User
     private $city_code = '';
     private $area_code = '';
     private $depot_id = 1;
+    private $role_id = 0;
     private $shop_name = '';
     private $tag = '';
+
+    /**
+     * @return int
+     */
+    public function getRoleId(): int
+    {
+        return $this->role_id;
+    }
+
+    /**
+     * @param int $role_id
+     */
+    public function setRoleId(int $role_id)
+    {
+        $this->role_id = $role_id;
+    }
 
     /**
      * @return int
