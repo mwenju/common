@@ -8,20 +8,17 @@ use Mwenju\Common\Pojo\User;
 
 interface ShopOrderServiceInterface
 {
-    public function setUser($user);
-    public function fenjian($order_product_id = 0);
-    public function fenJianSubmit($order_id = 0);
-    public function fuJian($order_product_id = 0);
-    public function fuJianSubmit($order_id = 0);
-    public function cancel($order_id = 0);
-    public function autoCancel();
-    public function noPayNotice();
-    public function notify($param = []);
-    public function getPrice($cart = null,$coupon_id = 0);
-    public function submit(User $user,$input = []);
-    public function receive($order_id = 0);
-    public function buyAgain($order_id = 0);
-    public function getNum($order_product_id = 0,$get_num = 0);
-    public function receiveSubmit($order_id = 0);
-    public function remarkSubmit($order_id = 0,$remark = '');
+    public function getList($param = []);
+    public function getProductList($param = []);
+    public function getInfo($param = []);
+    public function audit($param = []);
+    public function addProduct($param = []);
+    public function updateProduct($param = []);
+    public function clearProduct($param = []);
+    public function submit($param = []);
+    public function cancel($param = []);
+    public function sendOrder($order_id = 0,$admin_id = 0,$user_id = 0);
+    public function receiveReturnOrder($param = []);
+    public function oneKeySend($order_id = 0,$admin_id = 0);
+
 }
